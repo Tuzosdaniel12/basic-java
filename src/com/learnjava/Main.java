@@ -1,5 +1,6 @@
 package com.learnjava;
 
+import java.awt.*;
 import java.util.Date;
 
 public class Main {
@@ -20,11 +21,20 @@ public class Main {
         char letter = 'A';//Single quotes for char
         boolean isEligible = false;
 
-        //Date type
+        //Reference  type
         Date now = new Date();
 
         System.out.println(now);
 
+        //reference type point to the address of that object, so it can over write memory
+        Point point = new Point(1,1);
+        Point point2 = point;
+        point.x = 2;
+        System.out.println(point2);
+
+        //String
+        String message = "Hello World";
+        System.out.println(message);
 
     }
 }

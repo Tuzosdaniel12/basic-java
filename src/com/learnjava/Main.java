@@ -78,19 +78,41 @@ public class Main {
         String percent = NumberFormat.getCurrencyInstance().format(10.1);
         System.out.println(percent);
 
-
+        System.out.println("******************************************");
         final byte MONTHS_IN_YEAR = 12;
         final byte PERCENT = 100;
-
+        float annual;
+        int principal;
+        int years;
         Scanner scanner = new Scanner(System.in);
-        System.out.print(("Principal: "));
-        int principal = scanner.nextInt();
 
-        System.out.print(("Annual: "));
-        float annual = scanner.nextFloat();
+        while(true){
+            System.out.println(("Enter a number between 1,000 and 1,000,000): "));
+            System.out.print(("Principal ($1K - $1M): "));
+            principal = scanner.nextInt();
+            if(principal >= 1000 && principal <= 1000000)
+                break;
+        }
 
-        System.out.print(("Years: "));
-        int years = scanner.nextInt();
+
+        while(true){
+            System.out.println(("Enter a number greater then 0 or equal to 30: "));
+            System.out.print(("Annual: "));
+            annual = scanner.nextFloat();
+            if(annual > 0 && annual <= 30)
+                break;
+        }
+
+        while(true){
+            System.out.println(("Enter a number between 1 and 30: "));
+            System.out.print(("Years: "));
+            years = scanner.nextInt();
+
+            if(years > 0 && years <= 30)
+                break;
+        }
+
+
 
         float monthlyInterest = annual / PERCENT / MONTHS_IN_YEAR;
         int monthsInContract = years * 12;
@@ -98,5 +120,27 @@ public class Main {
 
         String  mortgage =  currency.format( (double)principal * ( monthlyInterest * ( powerOfRPlusOneToN )  / ( ( powerOfRPlusOneToN ) - 1 ) )  );
         System.out.println("Mortgage: " +  mortgage );
+
+        System.out.println("******************************************");
+
+        final String FIZZ = "Fizz";
+        final String BUZZ = "Buzz";//
+        String fizzBuzz;
+        //ask for the number
+        System.out.print(("Number: "));
+        int number = scanner.nextInt();
+
+
+        if(number % 5 == 0 && number % 3 == 0)
+            fizzBuzz = FIZZ+BUZZ;
+        else if(number % 5 == 0)
+            fizzBuzz = FIZZ;
+        else if(number % 3 == 0)
+            fizzBuzz = BUZZ;
+        else
+            fizzBuzz = Integer.toString(number);
+
+        System.out.println("Results: " +  fizzBuzz );
+
     }
 }

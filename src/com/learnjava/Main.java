@@ -1,5 +1,7 @@
 package com.learnjava;
 
+import jdk.swing.interop.SwingInterOpUtils;
+
 import java.awt.*;
 import java.text.NumberFormat;
 import java.util.Arrays;
@@ -7,15 +9,9 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class Main {
-
+    final static byte MONTHS_IN_YEAR = 12;
+    final static byte PERCENT = 100;
     public static void main(String[] args) {
-	    // write your code here
-        System.out.println("hello world");
-
-        //integer declaration
-        int age = 30;
-        System.out.println(age);
-
 
         //Primitive types, byte 1, short 2, int 2, long 8, float 4, double 8, char 2, boolean True/False
         byte myAge = 30;
@@ -26,21 +22,13 @@ public class Main {
 
         //Reference  type
         Date now = new Date();
-
         System.out.println(now);
 
-        //reference type point to the address of that object, so it can over write memory
+        //reference type point to the address of that object, so it can overwrite memory
         Point point = new Point(1,1);
         Point point2 = point;
         point.x = 2;
         System.out.println(point2);
-
-        //String
-        String message = "Hello World" + "!!";
-        System.out.println(message);
-
-        System.out.println( message.endsWith("!!") );
-        System.out.println( message.indexOf("sky"));
 
         int [] numbers = new int[5];
         numbers[0] = 1;
@@ -48,85 +36,29 @@ public class Main {
 
         System.out.println( Arrays.toString( numbers ) );
 
-        //constant use final key word
-        final float pi = 3.14F;
-
         //casting
         //Implicit casting
         //  byte > short > int . long > float > double
         short x = 1;
         int y = x + 2;
 
-        int round = Math.round(1.1F);
-        System.out.println(round);
 
-        int ceil = (int)Math.ceil(1.1F);
-        System.out.println(ceil);
+        System.out.println("******************* MORTGAGE CALCULATOR ***********************");
 
-        int floor = (int)Math.floor(1.1F);
-        System.out.println(floor);
+        double principal = (double)readNumber("Principal ($1K - $1M): ", 1000, 1000000);
+        float annual = (float)readNumber("Annual: ", 1, 30);
+        byte years = (byte)readNumber("Years: ", 1, 30);
 
-        int random = (int)(Math.random() * 100);
-        System.out.println(random);
+        displayMortgage(annual, principal, years);
+        displayBalance( annual, principal, years);
 
-        //format currency
-        NumberFormat currency = NumberFormat.getCurrencyInstance();
-
-        String result = currency.format(13546315.1212);
-        System.out.println(result);
-
-        String percent = NumberFormat.getCurrencyInstance().format(10.1);
-        System.out.println(percent);
-
-        System.out.println("******************************************");
-        final byte MONTHS_IN_YEAR = 12;
-        final byte PERCENT = 100;
-        float annual;
-        int principal;
-        int years;
-        Scanner scanner = new Scanner(System.in);
-
-        while(true){
-            System.out.println(("Enter a number between 1,000 and 1,000,000): "));
-            System.out.print(("Principal ($1K - $1M): "));
-            principal = scanner.nextInt();
-            if(principal >= 1000 && principal <= 1000000)
-                break;
-        }
-
-
-        while(true){
-            System.out.println(("Enter a number greater then 0 or equal to 30: "));
-            System.out.print(("Annual: "));
-            annual = scanner.nextFloat();
-            if(annual > 0 && annual <= 30)
-                break;
-        }
-
-        while(true){
-            System.out.println(("Enter a number between 1 and 30: "));
-            System.out.print(("Years: "));
-            years = scanner.nextInt();
-
-            if(years > 0 && years <= 30)
-                break;
-        }
-
-
-
-        float monthlyInterest = annual / PERCENT / MONTHS_IN_YEAR;
-        int monthsInContract = years * 12;
-        float powerOfRPlusOneToN = (float)Math.pow( (1 + monthlyInterest), monthsInContract ) ;
-
-        String  mortgage =  currency.format( (double)principal * ( monthlyInterest * ( powerOfRPlusOneToN )  / ( ( powerOfRPlusOneToN ) - 1 ) )  );
-        System.out.println("Mortgage: " +  mortgage );
-
-        System.out.println("******************************************");
-
+        System.out.println("************************** FIZZBUZZ ***************************");
         final String FIZZ = "Fizz";
         final String BUZZ = "Buzz";//
         String fizzBuzz;
+
         //ask for the number
+        Scanner scanner = new Scanner(System.in);
         System.out.print(("Number: "));
         int number = scanner.nextInt();
 
@@ -142,5 +74,52 @@ public class Main {
 
         System.out.println("Results: " +  fizzBuzz );
 
+    }
+
+    public static double calculateMortgage( float annual, double principal, int years){
+
+        float monthlyInterest = annual / PERCENT / MONTHS_IN_YEAR;
+        int monthsInContract = years * MONTHS_IN_YEAR;
+        float powerOfRPlusOneToN = (float)Math.pow( (1 + monthlyInterest), monthsInContract ) ;
+
+        return  (double)principal * ( monthlyInterest * ( powerOfRPlusOneToN )  / ( ( powerOfRPlusOneToN ) - 1 ) ) ;
+    }
+    public static  double calculateBalance(float annual, double principal, int years, short numberOfPaymentsMade){
+        float monthlyInterest = annual / PERCENT / MONTHS_IN_YEAR;
+        int numberOfPayments = years * MONTHS_IN_YEAR;
+
+        return principal * ( Math.pow(1 + monthlyInterest, numberOfPayments) - Math.pow(1 + monthlyInterest, numberOfPaymentsMade) )
+                         / ( Math.pow(1 + monthlyInterest, numberOfPayments) - 1) ;
+    }
+
+    public static double readNumber(String prompt, double min, double max){
+        Scanner scanner = new Scanner(System.in);
+        double value;
+        while(true){
+            System.out.print((prompt));
+            value = scanner.nextDouble();
+            if(value >= min && value <= max)
+                break;
+            System.out.println("Enter a number between " + min + " and " + max);
+        }
+        return value;
+    }
+
+    public static void displayMortgage(float annual, double principal, byte years){
+
+        double mortgage = calculateMortgage( annual, principal, years);
+
+        System.out.println("MORTGAGE: ");
+        System.out.println("******************************************");
+        System.out.println("Monthly Payments: " + NumberFormat.getCurrencyInstance().format(mortgage));
+    }
+
+    private static void displayBalance( float annual, double principal, byte years ) {
+        System.out.println("PAYMENT SCHEDULE");
+        System.out.println("******************************************");
+        for ( short month = 1; month <= years * MONTHS_IN_YEAR; month++){
+            double balance = calculateBalance( annual, principal, years, month );
+            System.out.println(NumberFormat.getCurrencyInstance().format(balance));
+        }
     }
 }
